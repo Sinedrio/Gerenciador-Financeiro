@@ -3,7 +3,8 @@
 #include <string.h>
 #include <math.h>
 
-struct Registro {
+struct Registro
+{
   int mes;
   int ano;
   float valor;
@@ -63,10 +64,12 @@ int cadrg(){//Cadastro receita e gasto
 //2-Relatório de Movimentação dos Ultimos 12 Meses
 int anual(){//Registro anual dos gastos
   float lucro_anual;
-  if(registro.selic != 0){
+  if(registro.selic != 0)
+  {
     meses_lucro[registro.mes] = registro.valor-(registro.moradia+registro.estudos+registro.trans+registro.ali)+registro.selic;
   }
-  else{
+  else
+  {
     meses_lucro[registro.mes] = registro.valor-(registro.moradia+registro.estudos+registro.trans+registro.ali);
   }
   for (int i = 1; i <= 12; i++) {
@@ -75,6 +78,16 @@ int anual(){//Registro anual dos gastos
   }
 
   printf("\nO seu lucro anual foi de: R$ %.2f\n",lucro_anual);
+  //HTML Relatorio anual
+  FILE *file;
+  file=fopen("MYGF/anual.html","a");
+  for (int i = 1; i <= 12; i++) 
+  {
+  lucro_anual += meses_lucro[i];
+  fprintf(file,"%s %s\t= R$ %.2f\n",meses[i-1], (i>=3 && i<=8) ? "\t" : ""  ,meses_lucro[i]);
+  }
+  fprintf(file,"\nO seu lucro anual foi de: R$ %.2f\n",lucro_anual);
+  
   return 0;
 } 
 
@@ -137,14 +150,14 @@ int invest(){
       registro.selic = registro.invest * 1.006;
     }
     
-    printf("Valor rendido da poupança do mês: ");
+    printf("Valor rendido dno investimento do mês: ");
     printf("%.2f\n",registro.selic);
 
     FILE *file;
-    file=fopen("MYGF/index.html","a");
-    fprintf(file,"---------------------------------\n");
+    file=fopen("MYGF/invest.html","a");
     fprintf(file,"Valor rendido no investimento do mês %d e ano %d é de: ", registro.mes, registro.ano);
     fprintf(file,"%.2f\n",registro.selic);
+    fprintf(file,"---------------------------------\n");
     fclose(file);
     return 0;
 }
@@ -181,7 +194,8 @@ int main(void){
   scanf("%d",&opc);
   puts("\n");
 
-  switch (opc){
+  switch (opc)
+  {
     case 1:
     cadrg();
     
@@ -217,4 +231,5 @@ void retorno(){
   if(confirm==0){
     main();
   }
-} 
+}
+ 
