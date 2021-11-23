@@ -212,10 +212,10 @@ int main(void){
     break;
     case 5:
     puts("Lucas Forge Freo - CEO");
-    puts("RA: 22.121.081-8");
+    
     puts("");
     puts("João Lucas Freitas de Almeida Rocha - CTO");
-    puts("RA: 22.121.004-0");
+    
     break;
   };
   retorno();
