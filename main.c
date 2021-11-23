@@ -11,7 +11,8 @@ struct Registro {
   float estudos;
   float trans;
   float ali;
-  float poup;
+  float invest;
+  float selic;
 };
 
 struct Registro registro;
@@ -38,8 +39,6 @@ int cadrg(){//Cadastro receita e gasto
 
  meses_lucro[registro.mes] = registro.valor-(registro.moradia+registro.estudos+registro.trans+registro.ali);
   
-
-  
   FILE *file;
   file=fopen("MYGF/index.html","a");
   
@@ -64,7 +63,12 @@ int cadrg(){//Cadastro receita e gasto
 //2-Relatório de Movimentação dos Ultimos 12 Meses
 int anual(){//Registro anual dos gastos
   float lucro_anual;
-   meses_lucro[registro.mes] = registro.valor-(registro.moradia+registro.estudos+registro.trans+registro.ali);
+  if(registro.selic != 0){
+    meses_lucro[registro.mes] = registro.valor-(registro.moradia+registro.estudos+registro.trans+registro.ali)+registro.selic;
+  }
+  else{
+    meses_lucro[registro.mes] = registro.valor-(registro.moradia+registro.estudos+registro.trans+registro.ali);
+  }
   for (int i = 1; i <= 12; i++) {
   lucro_anual += meses_lucro[i];
   printf("%s %s\t= R$ %.2f\n",meses[i-1], (i>=3 && i<=8) ? "\t" : ""  ,meses_lucro[i]);
@@ -76,7 +80,7 @@ int anual(){//Registro anual dos gastos
 
 //3-Relatório do ultimo mes
 int ultmes(){//Registro anual dos gastos
-  meses_lucro[registro.mes] = registro.valor-(registro.moradia+registro.estudos+registro.trans+registro.ali);
+  meses_lucro[registro.mes] = registro.valor-(registro.moradia+registro.estudos+registro.trans+registro.ali)+registro.selic;
 
   FILE *file;
   file=fopen("MYGF/index.html","a");
@@ -93,50 +97,55 @@ int ultmes(){//Registro anual dos gastos
   return 0;
 } 
 
-//Investimento poupança
-int poupanca(){
-  float poup_total;
+//Investimento selic
+int invest(){
 
-  printf("Bem vindo a sua poupança! \n");
+  printf("Bem vindo ao seu investimento! \n");
   printf("---------------------------------\n");  
   
     printf("Digite o mês e o ano: ");
     scanf("%d",&registro.mes);
     scanf("%d",&registro.ano);
+    
+    printf("O seu saldo este mes é de: %.2f \n", meses_lucro[registro.mes]);
+
     printf("Qual valor deseja depositar? ");
-    scanf("%f", &registro.poup);
+    scanf("%f", &registro.invest);
 
     if(registro.mes == 1 || registro.mes == 2)
     {
-      poup_total = registro.poup * 1.98;
+      registro.selic = registro.invest * 1.008;
     }
     else if(registro.mes == 3 || registro.mes == 4)
     {
-      poup_total = registro.poup * 1.38;
+      registro.selic = registro.invest * 1.018;
     }
     else if(registro.mes == 5 || registro.mes == 6)
     {
-      poup_total = registro.poup * 1.45;
+      registro.selic = registro.invest * 1.015;
     }
     else if(registro.mes == 7 || registro.mes == 8)
     {
-      poup_total = registro.poup * 1.79;
+      registro.selic = registro.invest * 1.019;
     }
     else if(registro.mes == 9 || registro.mes == 10)
     {
-      poup_total = registro.poup * 2.90;
+      registro.selic = registro.invest * 1.012;
     }
     else if(registro.mes == 11 || registro.mes == 12)
     {
-      poup_total = registro.poup * 1.16;
+      registro.selic = registro.invest * 1.006;
     }
     
+    printf("Valor rendido da poupança do mês: ");
+    printf("%.2f\n",registro.selic);
 
     FILE *file;
     file=fopen("MYGF/index.html","a");
     fprintf(file,"---------------------------------\n");
-    printf("Valor rendido da poupança do mês: ");
-    printf("%.2f\n",poup_total);
+    fprintf(file,"Valor rendido no investimento do mês %d e ano %d é de: ", registro.mes, registro.ano);
+    fprintf(file,"%.2f\n",registro.selic);
+    fclose(file);
     return 0;
 }
 
@@ -163,7 +172,7 @@ int main(void){
   "1-Cadastro de Receitas e Gastos\n"
   "2-Relatório de Movimentação dos Ultimos 12 Meses\n"
   "3-Relatório de Cada Categaoria (último mês)\n"
-  "4-Poupança\n"
+  "4-Investir\n"
   "5-Integrantes\n"
   "--------------------------------------------------\n");
   
@@ -185,7 +194,7 @@ int main(void){
     ultmes();
     break;
     case 4:
-    poupanca();
+    invest();
     break;
     case 5:
     puts("Lucas Forge Freo - CEO");
